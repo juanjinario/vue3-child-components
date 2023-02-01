@@ -4,9 +4,14 @@
   </div>
   <h3 class="mt-2 lh-base">Tu post favorito es: {{ favoritePost?.title }}</h3>
   <div class="mt-4">
-    <Pagination class="mb-2"></Pagination>
+    <Pagination
+      class="mb-2"
+      :page="page"
+      @next="nextPage"
+      @previous="previousPage"
+    />
     <BlogPost
-      v-for="blog of postsList.slice(0, 10)"
+      v-for="blog of postsListPaged"
       :body="blog.body"
       :color-title="blog.colorTitle"
       :id="blog.id"
@@ -14,28 +19,46 @@
       @changeFavorite="changeFavorite"
       :showAlert="onShowAlert"
     />
-    <Pagination class="mb-2"></Pagination>
+    <Pagination
+      class="mt-4"
+      :page="page"
+      @next="nextPage"
+      @previous="previousPage"
+    />
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { getAllPosts } from "/src/core/services/post.service.js";
-import MyButton from "./components/mybutton/MyButton.vue";
 import BlogPost from "./components/blogPost/BlogPost.vue";
 import Pagination from "./components/pagination/Pagination.vue";
 
 const name = "MyName";
 const favoritePost = ref({});
 const postsList = ref([]);
+const page = ref(0);
+const size = ref(10);
 getAllPosts().then((data) => (postsList.value = data));
+
+// Computed
+const postsListPaged = computed(() => {
+  const start = page.value * size.value;
+  const end = (page.value + 1) * size.value;
+  return postsList.value.slice(start, end);
+});
 
 // methods
 const changeFavorite = (favorite) => {
   favoritePost.value = favorite;
 };
-
 const onShowAlert = (favorite) => {
   alert(favorite.title);
+};
+const previousPage = () => {
+  page.value -= 1;
+};
+const nextPage = () => {
+  page.value += 1;
 };
 </script>
 <style scoped></style>

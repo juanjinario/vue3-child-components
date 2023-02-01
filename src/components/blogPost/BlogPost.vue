@@ -1,7 +1,9 @@
 <template>
   <div class="card mt-3">
     <div class="card-body">
-      <h5 :class="`text-${colorTitle}`" class="card-title">{{ title }}</h5>
+      <h5 :class="`text-${colorTitle}`" class="card-title">
+        {{ id }} {{ title }}
+      </h5>
       <p>{{ body }}</p>
       <button class="btn btn-outline-info" @click="onSelectFavorite">
         Favorito
@@ -33,6 +35,10 @@ const props = defineProps({
   body: {
     type: String,
     default: "Sin descripción",
+  },
+  id: {
+    type: Number,
+    default: -1,
   },
   showAlert: Function,
 });
