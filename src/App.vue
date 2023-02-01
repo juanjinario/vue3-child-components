@@ -42,19 +42,12 @@ import Spinner from "./components/spinner/Spinner.vue";
 const name = "MyName";
 const favoritePost = ref({});
 const postsList = ref([]);
-const loading = ref(false);
+const loading = ref(true);
 const page = ref(0);
 const size = ref(10);
 
-onMounted(async () => {
-  loading.value = true;
-  try {
-    postsList.value = await getAllPosts();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
+onMounted(() => {
+  fetchData();
 });
 
 // Computed
@@ -69,6 +62,15 @@ const lastPage = computed(() => {
 });
 
 // methods
+const fetchData = async () => {
+  try {
+    postsList.value = await getAllPosts();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
 const changeFavorite = (favorite) => {
   favoritePost.value = favorite;
 };
