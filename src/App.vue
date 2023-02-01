@@ -11,15 +11,18 @@
       @next="nextPage"
       @previous="previousPage"
     />
-    <BlogPost
-      v-for="blog of postsListPaged"
-      :body="blog.body"
-      :color-title="blog.colorTitle"
-      :id="blog.id"
-      :title="blog.title"
-      @changeFavorite="changeFavorite"
-      :showAlert="onShowAlert"
-    />
+    <Spinner v-if="loading" class="d-block text-center mx-auto my-3"></Spinner>
+    <template v-else>
+      <BlogPost
+        v-for="blog of postsListPaged"
+        :body="blog.body"
+        :color-title="blog.colorTitle"
+        :id="blog.id"
+        :title="blog.title"
+        @changeFavorite="changeFavorite"
+        :showAlert="onShowAlert"
+      />
+    </template>
     <Pagination
       class="mt-4"
       :page="page"
@@ -34,13 +37,19 @@ import { computed, ref } from "vue";
 import { getAllPosts } from "/src/core/services/post.service.js";
 import BlogPost from "./components/blogPost/BlogPost.vue";
 import Pagination from "./components/pagination/Pagination.vue";
+import Spinner from "./components/spinner/Spinner.vue";
 
 const name = "MyName";
 const favoritePost = ref({});
 const postsList = ref([]);
+const loading = ref(false);
 const page = ref(0);
 const size = ref(10);
-getAllPosts().then((data) => (postsList.value = data));
+
+loading.value = true;
+getAllPosts()
+  .then((data) => (postsList.value = data))
+  .finally(() => (loading.value = false));
 
 // Computed
 const postsListPaged = computed(() => {
@@ -49,6 +58,7 @@ const postsListPaged = computed(() => {
   return postsList.value.slice(start, end);
 });
 const lastPage = computed(() => {
+  if (!postsList.value.length) return 0;
   return postsList.value.length / size.value - 1;
 });
 
