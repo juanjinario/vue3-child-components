@@ -33,7 +33,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { getAllPosts } from "/src/core/services/post.service.js";
 import BlogPost from "./components/blogPost/BlogPost.vue";
 import Pagination from "./components/pagination/Pagination.vue";
@@ -46,10 +46,16 @@ const loading = ref(false);
 const page = ref(0);
 const size = ref(10);
 
-loading.value = true;
-getAllPosts()
-  .then((data) => (postsList.value = data))
-  .finally(() => (loading.value = false));
+onMounted(async () => {
+  loading.value = true;
+  try {
+    postsList.value = await getAllPosts();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+});
 
 // Computed
 const postsListPaged = computed(() => {

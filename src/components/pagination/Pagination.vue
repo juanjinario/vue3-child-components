@@ -12,7 +12,9 @@
     >
       Anterior
     </button>
-    <span class="mx-2 text-muted small">Página {{ page + 1 }}</span>
+    <span v-show="last" class="mx-2 text-muted small"
+      >Página {{ page + 1 }}</span
+    >
     <button
       type="button"
       class="btn btn-primary"
