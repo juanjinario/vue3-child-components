@@ -4,8 +4,9 @@
   </div>
   <h3 class="mt-2 lh-base">Tu post favorito es: {{ favoritePost?.title }}</h3>
   <div class="mt-4">
+    <Pagination class="mb-2"></Pagination>
     <BlogPost
-      v-for="blog of blogList"
+      v-for="blog of postsList.slice(0, 10)"
       :body="blog.body"
       :color-title="blog.colorTitle"
       :id="blog.id"
@@ -13,42 +14,20 @@
       @changeFavorite="changeFavorite"
       :showAlert="onShowAlert"
     />
-    <BlogPost
-      :color-title="'warning'"
-      title="Titulo del blog 4"
-      @changeFavorite="changeFavorite"
-      :showAlert="onShowAlert"
-    />
+    <Pagination class="mb-2"></Pagination>
   </div>
-  <MyButton class="mt-4" />
 </template>
 <script setup>
+import { ref } from "vue";
+import { getAllPosts } from "/src/core/services/post.service.js";
 import MyButton from "./components/mybutton/MyButton.vue";
 import BlogPost from "./components/blogPost/BlogPost.vue";
-import { ref } from "vue";
+import Pagination from "./components/pagination/Pagination.vue";
 
 const name = "MyName";
 const favoritePost = ref({});
-const blogList = [
-  {
-    id: 1,
-    body: "Este es el cuerpo del post 1",
-    title: "Titulo post 1",
-    colorTitle: "success",
-  },
-  {
-    id: 2,
-    body: "Este es el cuerpo del post 2",
-    title: "Titulo post 2",
-    colorTitle: "primary",
-  },
-  {
-    id: 3,
-    body: "Este es el cuerpo del post 3",
-    title: "Titulo póst 3",
-    colorTitle: "warning",
-  },
-];
+const postsList = ref([]);
+getAllPosts().then((data) => (postsList.value = data));
 
 // methods
 const changeFavorite = (favorite) => {
