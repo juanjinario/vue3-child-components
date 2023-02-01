@@ -7,6 +7,7 @@
     <Pagination
       class="mb-2"
       :page="page"
+      :last="lastPage"
       @next="nextPage"
       @previous="previousPage"
     />
@@ -22,6 +23,7 @@
     <Pagination
       class="mt-4"
       :page="page"
+      :last="lastPage"
       @next="nextPage"
       @previous="previousPage"
     />
@@ -45,6 +47,9 @@ const postsListPaged = computed(() => {
   const start = page.value * size.value;
   const end = (page.value + 1) * size.value;
   return postsList.value.slice(start, end);
+});
+const lastPage = computed(() => {
+  return postsList.value.length / size.value - 1;
 });
 
 // methods
